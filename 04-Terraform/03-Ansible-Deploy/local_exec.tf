@@ -25,12 +25,13 @@ resource "null_resource" "remote-exec-1" {
     private_key = "${file(var.pvt_key)}"
     host        = "${aws_instance.backend.public_ip}"
   }
-
-  provisioner "remote-exec" {
-    command =  <<EOT
-      sudo apt-get update;
-      sudo apt-get install python -y
-   EOT
+  
+provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install git -y",
+      "sudo apt-get install python -y",
+    ]
   }
 }
 
