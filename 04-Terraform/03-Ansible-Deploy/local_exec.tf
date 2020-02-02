@@ -27,8 +27,10 @@ resource "null_resource" "remote-exec-1" {
   }
 
   provisioner "remote-exec" {
-    command = "sudo apt-get update"
-    command = "sudo apt-get install python -y"
+    command =  <<EOT
+      sudo apt-get update;
+      sudo apt-get install pytho -y
+   EOT
   }
 }
 
