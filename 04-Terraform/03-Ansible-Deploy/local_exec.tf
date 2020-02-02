@@ -29,7 +29,7 @@ resource "null_resource" "remote-exec-1" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get install python sshpass -y",
+      "sudo apt-get install python -y",
     ]
   }
 }
