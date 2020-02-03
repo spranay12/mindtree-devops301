@@ -14,11 +14,11 @@ node {
   stage('Maven-Clean') {
    sh label: '', script: 'mvn clean'
   }
-
+    
  stage('Maven-Compile') {
    sh label: '', script: 'mvn compile'
   }
-    
+  
    stage('Maven-Test') {
    sh label: '', script: 'mvn test'
   }
@@ -26,8 +26,10 @@ node {
    stage('Maven-Package') {
    sh label: '', script: 'mvn package'
   }
-
   
+   stage('Archive-Artifacts') {
+   archiveArtifacts 'target/*.war'
+  }
    stage('Docker-Stage-Deployment') {
    sh label: '', script: 'docker-compose up -d --build'
   }
@@ -58,7 +60,7 @@ notify('Job Completed')
 
 def notify(status){
     emailext (
-	to: "amitvashist7@gmail.com",
+	to: "pranayyadav095@gmail.com",
 	subject: "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
 	 body: """<p>${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
 	<p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
