@@ -11,7 +11,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "backend" {
-  ami                    = "ami-09d069a04349dc3cb"
+  ami                    = "ami-04763b3055de4860b"
   instance_type          = "t2.micro"
   key_name               = "${var.key_name}"
   vpc_security_group_ids = ["${var.sg-id}"]
@@ -43,7 +43,7 @@ provisioner "local-exec" {
         echo "[jenkins-ci]"| tee -a jenkins-ci.ini;
         export ANSIBLE_HOST_KEY_CHECKING=False;
         echo "${aws_instance.backend.public_ip}" | tee -a jenkins-ci.ini;
-        ansible-playbook  --key=${var.pvt_key} -i jenkins-ci.ini ./ansible/04-Tomcat/web-playbook.yaml -u ec2-user -v
+        ansible-playbook  --key=/root/.ssh/aws.pem -i jenkins-ci.ini ./ansible/04-Tomcat/web-playbook.yaml -u ubuntu -v
     EOT
 }
 }
