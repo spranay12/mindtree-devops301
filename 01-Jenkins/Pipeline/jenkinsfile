@@ -18,7 +18,11 @@ node {
  stage('Maven-Compile') {
    sh label: '', script: 'mvn compile'
   }
-  
+  stage('Sonar Analysis'){
+        withSonarQubeEnv('SonarQube'){
+         sh 'mvn sonar:sonar'
+        }
+        } 
    stage('Maven-Test') {
    sh label: '', script: 'mvn test'
   }
@@ -30,9 +34,34 @@ node {
    stage('Archive-Artifacts') {
    archiveArtifacts 'target/*.war'
   }
-   stage('Docker-Stage-Deployment') {
-   sh label: '', script: 'docker-compose up -d --build'
+     stage('Archive-Artifacts') {
+   archiveArtifacts 'target/*.war'
   }
+  stage('Jfrog Artifacory Upload') {
+        def server= Artifactory.server 'Artifactory'
+                    def uploadSpec= """{
+                        "files": [{
+                        "pattern": "/var/lib/jenkins/workspace/springpet-clinic/01-Jenkins/Code/petclinic/target/*.war",
+                        "target": "M1056412"}]
+                    }"""
+        server.upload(uploadSpec)
+        
+        }
+     stage('Jfrog Artifactory download'){
+    def server= Artifactory.server 'Artifactory'
+    def downloadSpec = """{
+    "files": [
+    {
+      "pattern": "M1056412/*.war",
+      "target": "/var/lib/jenkins/artifacts/"
+      
+    }
+    ]
+    }"""  
+
+    server.download(downloadSpec)
+   
+} 
  
   stage('Geting Ready For Ansible') {
   sh label: 'Docker', script: 'cp -rf target/*.war ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/'
@@ -40,6 +69,15 @@ node {
 }  
    
  }
+
+def project_terra="04-Terraform/03-Ansible-Deploy"
+dir(project_terra) {
+   stage('Prod Deployment on AWS'){
+   sh label: 'terraform', script: '/bin/terraform  init'
+   sh label: 'terraform', script: '/bin/terraform  apply -input=false -auto-approve'
+   }
+}
+
 notify('Job Completed')   
 } catch (err) {
   notify("Error ${err}")
@@ -51,7 +89,7 @@ notify('Job Completed')
 
 def notify(status){
     emailext (
-	to: "amitvashist7@gmail.com",
+	to: "pranayyadav095@gmail.com",
 	subject: "${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
 	 body: """<p>${status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
 	<p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
