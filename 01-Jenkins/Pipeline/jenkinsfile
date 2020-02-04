@@ -64,7 +64,7 @@ node {
 } 
    stage('Docker-Stage-Deployment') {
     when {
-                branch 'development' 
+                branch 'QA' 
             }
     steps {
    sh label: '', script: 'docker-compose up -d --build'
@@ -72,7 +72,7 @@ node {
  }
   stage('Geting Ready For Ansible') {
     when {
-                branch 'development' 
+                branch 'master' 
             }
     steps {
   sh label: 'Docker', script: 'cp -rf target/*.war ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/'
