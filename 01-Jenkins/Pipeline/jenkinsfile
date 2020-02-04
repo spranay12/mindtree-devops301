@@ -63,31 +63,20 @@ node {
    
 } 
    stage('Docker-Stage-Deployment'){
-       when {
-            branch  'QA' 
-{
+ 
    sh label: '', script: 'docker-compose up -d --build'
   }
-} 
+  
   stage('Geting Ready For Ansible'){
-        when  {
-             branch "master"
-              }
+       
  {
   sh label: 'Docker', script: 'cp -rf target/*.war ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/'
   sh label: 'Jenkins', script: "echo '<h1> TASK BUILD ID: ${env.BUILD_DISPLAY_NAME}</h1>' > ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/apps/index.html"
 }  
-   
- }
+}   
 
-def project_terra="04-Terraform/03-Ansible-Deploy"
-dir(project_terra) {
-   stage('Prod Deployment on AWS'){
-   sh label: 'terraform', script: '/bin/terraform  init'
-   sh label: 'terraform', script: '/bin/terraform  apply -input=false -auto-approve'
-   }
-}
-}
+
+
 notify('Job Completed')   
 } catch (err) {
   notify("Error ${err}")
