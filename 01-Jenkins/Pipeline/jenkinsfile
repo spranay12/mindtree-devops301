@@ -4,7 +4,7 @@ node {
 
      
   stage('Git-Checkout') {
-   git 'https://github.com/spranay12/mindtree-devops-30Jan2020.git'
+  'git 'https://github.com/spranay12/mindtree-devops-30Jan2020.git'
   }
     
  def project_path="01-Jenkins/Code/petclinic"
@@ -62,34 +62,15 @@ node {
     server.download(downloadSpec)
    
 } 
-   stage('Docker-Stage-Deployment') {
-    when {
-                branch 'QA' 
-            }
-    steps {
+   stage('Docker-Stage-Deployment'){
+       when {
+            branch  'QA' 
+steps{
    sh label: '', script: 'docker-compose up -d --build'
   }
- }
-  stage('Geting Ready For Ansible') {
-    when {
-                branch 'master' 
-            }
-    steps {
-  sh label: 'Docker', script: 'cp -rf target/*.war ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/'
-  sh label: 'Jenkins', script: "echo '<h1> TASK BUILD ID: ${env.BUILD_DISPLAY_NAME}</h1>' > ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/apps/index.html"
-}  
-   
- }
-
-def project_terra="04-Terraform/03-Ansible-Deploy"
-dir(project_terra) {
-   stage('Prod Deployment on AWS'){
-   sh label: 'terraform', script: '/bin/terraform  init'
-   sh label: 'terraform', script: '/bin/terraform  apply -input=false -auto-approve'
-   }
+} 
+  
 }
-}
-
 notify('Job Completed')   
 } catch (err) {
   notify("Error ${err}")
@@ -107,4 +88,3 @@ def notify(status){
 	<p>Check console output at <a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></p>""",
 		)
 	}
-
