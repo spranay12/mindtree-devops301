@@ -2,6 +2,7 @@ node {
   stage('Git-Checkout') {
    git 'https://github.com/amitvashisttech/mindtree-devops-30Jan2020.git'
   }
+  //
     
  def project_path="01-Jenkins/Code/petclinic"
  
