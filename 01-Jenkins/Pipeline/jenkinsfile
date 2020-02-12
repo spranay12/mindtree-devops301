@@ -67,7 +67,7 @@ node {
  def project_terra="03-Ansible-Deploy"
 dir(project_terra) {
    stage('Prod Deployment on AWS'){
-   sh label: 'Ansible', script: "ansible-playbook  --key=${var.pvt_key} -i jenkins-ci.ini ./ansible/04-Tomcat/web-playbook.yaml -u ubuntu -v"
+   sh 'ansible-playbook  --key=${var.pvt_key} -i jenkins-ci.ini ./ansible/04-Tomcat/web-playbook.yaml -u ubuntu -v'
    }
 }
 
