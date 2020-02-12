@@ -64,13 +64,10 @@ node {
   sh label: 'Jenkins', script: "echo '<h1> TASK BUILD ID: ${env.BUILD_DISPLAY_NAME}</h1>' > ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/apps/index.html"
 }  
  }
- def project_terra="04-Terraform"
-dir(project_terra) {
    stage('Prod Deployment on AWS'){
-   sh 'cd 03-Ansible-Deploy/'
+   sh 'cd /04-Terraform/03-Ansible-Deploy/'
    sh 'ansible-playbook  --key=${var.pvt_key} -i jenkins-ci.ini ./ansible/04-Tomcat/web-playbook.yaml -u ubuntu -v'
    }
-}
 
 
 notify('Job Completed')   
