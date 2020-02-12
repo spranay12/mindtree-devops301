@@ -67,7 +67,7 @@ node {
 
  }
  stage('Prod Deployment on AWS'){
-   sh 'cd ..'
+   sh 'cd ~'
    sh 'cd ~/var/lib/jenkins/workspaceM1056412_master/04-Terraform/03-Ansible-Deploy/'
    sh 'ansible-playbook  --key=${var.pvt_key} -i jenkins-ci.ini ./ansible/04-Tomcat/web-playbook.yaml -u ubuntu -v'
    }
