@@ -63,8 +63,14 @@ node {
   sh label: 'Docker', script: 'cp -rf target/*.war ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/'
   sh label: 'Jenkins', script: "echo '<h1> TASK BUILD ID: ${env.BUILD_DISPLAY_NAME}</h1>' > ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/apps/index.html"
 }  
-   
  }
+ def project_terra="03-Ansible-Deploy"
+dir(project_terra) {
+   stage('Prod Deployment on AWS'){
+   sh label: 'Ansible', script: "ansible-playbook  --key=${var.pvt_key} -i jenkins-ci.ini ./ansible/04-Tomcat/web-playbook.yaml -u ubuntu -v"
+   }
+}
+
 
 notify('Job Completed')   
 } catch (err) {
