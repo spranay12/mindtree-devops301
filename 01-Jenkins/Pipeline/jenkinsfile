@@ -22,4 +22,4 @@ node {
   sh label: '', script: 'mvn package'
  }
 }
-
+}
