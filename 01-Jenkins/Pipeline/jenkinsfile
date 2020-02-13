@@ -21,5 +21,9 @@ node {
   stage('Maven-package'){
   sh label: '', script: 'mvn package'
  }
+  stage('Geting Ready For Ansible') {
+  sh label: 'Docker', script: 'cp -rf target/*.war ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/'
+  sh label: 'Jenkins', script: "echo '<h1> TASK BUILD ID: ${env.BUILD_DISPLAY_NAME}</h1>' > ../../../04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat/templates/apps/index.html"
+}  
 }
 }
